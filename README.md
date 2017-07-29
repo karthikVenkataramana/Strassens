@@ -1,2 +1,2 @@
 # Strassens
-A Parallel implementation of Strassen's Matrix Multiplication algorithm.
+A Parallel implementation of Strassen's Matrix Multiplication algorithm using MPI.
