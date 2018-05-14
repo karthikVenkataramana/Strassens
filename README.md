@@ -1,8 +1,10 @@
-# Strassens Matrix Multiplication on large clusters.
-Parallel implementation of Strassen's Matrix Multiplication algorithm using MPI written in C. <br/> 
+# Strassens Matrix Multiplication
+Parallel implementation of Strassen's Matrix Multiplication algorithm on small clusters (Tested on a cluster of size 52) using MPI written mainly in C. <br/> 
 Speed up ranging from 2 % to 18 % is observed on large square matrices. <br/>
 
-# Execution Instructions:
+Please see the report for further details, analysis and noval contributions. <br/>
+
+# Instructions:
 Compilation: mpicc -o exec_file strassen.c -lm <br/>
 Execution: mpiexec -n <no.of.processors> exec_file <br/>
 
