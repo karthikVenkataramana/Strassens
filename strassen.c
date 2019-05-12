@@ -158,9 +158,9 @@
       MPI_Isend(B + ((n / 2) * (n)), 1, subarrtype, 2, 2, MPI_COMM_WORLD, & req[2]); //Sending B21
       MPI_Isend(C + ((n / 2) * (n)), 1, subarrtype, 2, 2, MPI_COMM_WORLD, & req[2]); //Sending C21
 
-      MPI_Isend(A + ((n / 2) * n + (n - 1)), 1, subarrtype, 3, 3, MPI_COMM_WORLD, & req[3]); //Sending A22 , starting address is A + ((n / 2) * (n)) + n/2
-      MPI_Isend(B + ((n / 2) * n + (n - 1)), 1, subarrtype, 3, 3, MPI_COMM_WORLD, & req[3]); //Sending B22 
-      MPI_Isend(C + ((n / 2) * n + (n - 1)), 1, subarrtype, 3, 3, MPI_COMM_WORLD, & req[3]); //Sending C22 
+      MPI_Isend(A + ((n / 2) * n + (n / 2)), 1, subarrtype, 3, 3, MPI_COMM_WORLD, & req[3]); //Sending A22 , starting address is A + ((n / 2) * (n)) + n/2
+      MPI_Isend(B + ((n / 2) * n + (n / 2)), 1, subarrtype, 3, 3, MPI_COMM_WORLD, & req[3]); //Sending B22 
+      MPI_Isend(C + ((n / 2) * n + (n / 2)), 1, subarrtype, 3, 3, MPI_COMM_WORLD, & req[3]); //Sending C22 
 
     }
 
