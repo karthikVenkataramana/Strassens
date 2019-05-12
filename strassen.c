@@ -86,7 +86,7 @@
       while (j < 3) {  //Calculate 3 times and find average
         start = MPI_Wtime();
         // print_matrix(C,n,n);
-        C = Serial_Multiply(A, B, C, n);
+        Serial_Multiply(A, B, C, n);
         end = MPI_Wtime();
         serial_time[j] = initialization_time + (end - start);
         j++;
@@ -101,7 +101,7 @@
     j = 0;
     while (j < 3) {  //Standard Parallel matrix multiply repeated 3 times
       start = MPI_Wtime();
-      C = Parallel_Multiply(A, B, C, 0, my_rank, p, n, n); // Standard Multiply, result stored in C.
+      Parallel_Multiply(A, B, C, 0, my_rank, p, n, n); // Standard Multiply, result stored in C.
       end = MPI_Wtime();
       parallel_time[j] = initialization_time + (end - start); 
       j++;
@@ -348,13 +348,13 @@
 
     }
       /* Calculate P1..7 in parallel */
-    P1 = Parallel_Multiply(T1, T2, P1, 0, my_rank, p, rows, columns); // P1= T1*T2
-    P7 = Parallel_Multiply(T3, T4, P7, 0, my_rank, p, rows, columns); // P7 =T3*T4
-    P3 = Parallel_Multiply(T14, T5, P3, 1, my_rank, p, rows, columns); //P3 = T14*T5
-    P5 = Parallel_Multiply(T6, T7, P5, 1, my_rank, p, rows, columns);  // P5 = T6*T7 
-    P2 = Parallel_Multiply(T8, T9, P2, 2, my_rank, p, rows, columns);
-    P4 = Parallel_Multiply(T10, T11, P4, 2, my_rank, p, rows, columns);
-    P6 = Parallel_Multiply(T12, T13, P6, 3, my_rank, p, rows, columns);
+    Parallel_Multiply(T1, T2, P1, 0, my_rank, p, rows, columns); // P1= T1*T2
+    Parallel_Multiply(T3, T4, P7, 0, my_rank, p, rows, columns); // P7 =T3*T4
+    Parallel_Multiply(T14, T5, P3, 1, my_rank, p, rows, columns); //P3 = T14*T5
+    Parallel_Multiply(T6, T7, P5, 1, my_rank, p, rows, columns);  // P5 = T6*T7 
+    Parallel_Multiply(T8, T9, P2, 2, my_rank, p, rows, columns);
+    Parallel_Multiply(T10, T11, P4, 2, my_rank, p, rows, columns);
+    Parallel_Multiply(T12, T13, P6, 3, my_rank, p, rows, columns);
 
     /* We calculated P1...7. let's get them onto our root processor(0) */
 
@@ -397,7 +397,7 @@
       }
       // We have result but is in order C11 followed by C12 followed by C21 followed by C22 pointed by C. So we should convert it.
 
-      C = Form_Matrix(C11, C12, C21, C22, C, n); // Converts C into desired order
+      Form_Matrix(C11, C12, C21, C22, C, n); // Converts C into desired order
       end = MPI_Wtime();
       strassens_time = initialization_time + (end - start);
       printf("/************************************Strassens******************************/ \n ");
@@ -473,14 +473,16 @@
     to = (my_rank + 1) * rows / no_of_processors; // to
    
     MPI_Bcast(B, no_of_elements, MPI_DOUBLE, root, MPI_COMM_WORLD); // Broadcast entire matrix B to all processors
-    MPI_Scatter(A, no_of_elements / no_of_processors, MPI_DOUBLE, A, no_of_elements / no_of_processors, MPI_DOUBLE, root, MPI_COMM_WORLD); // Scatter A (n/p) rows to all processors
+    int elements_per_proc = no_of_elements / no_of_processors;
+    double *sub = malloc(sizeof(double) * elements_per_proc);
+    MPI_Scatter(A, elements_per_proc, MPI_DOUBLE, sub, elements_per_proc, MPI_DOUBLE, root, MPI_COMM_WORLD); // Scatter A (n/p) rows to all processors
     int loop = (to - from);
     int ci = 0;
     for (i = from; i < to; i++) {
       for (j = 0; j < columns; j++) {
         sum = 0;
         for (k = 0; k < rows; k++) {
-          sum += A[ci * rows + k] * B[k * rows + j]; // Calculate C = A*B
+          sum += sub[ci * rows + k] * B[k * rows + j]; // Calculate C = A*B
         }
         result[ci * rows + j] = sum;
       }
